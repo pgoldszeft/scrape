@@ -1,7 +1,15 @@
 const express = require('express');
 const app = express();
 const scraper = require('./scraper');
-const port = 3000;
+const port = 80;
+
+/**
+ * @fileOverview This is the entry point of the service.  The service implements
+ * two endpoints:
+ *
+ * POST /stories?url=<url of the page to scrape> - Initiates the scrape process and returns an ID
+ * GET /stories/:storyId - Returns the metadata scraped in a previous POST call.
+ */
 
 app.post("/stories", (req, res) => {
 	scraper.postStories(req, res);
