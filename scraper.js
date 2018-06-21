@@ -20,11 +20,15 @@ function Scrapper() {
 	 */
 
 	this.initParsers = () => {
-		require('./parsers/basicParsers').forEach( parser => {
-			me.parsers[parser.property] = parser;
-		});
-		require('./parsers/imageParser').forEach( parser => {
-			me.parsers[parser.property] = parser;
+		[
+			'./parsers/basicParsers',
+			'./parsers/imageParser',
+			'./parsers/videoParser',
+			'./parsers/articleParser'
+		].forEach( parserFile => {
+			require(parserFile).forEach( parser => {
+				me.parsers[parser.property] = parser;
+			});
 		});
 	};
 
@@ -40,11 +44,11 @@ function Scrapper() {
 	this.findField = ( metaObj, path, createIfNotFound ) => {
 		let current = metaObj;
 
-		for( let i=0; i<path.length; i++ ){
+		for( let i=1; i<path.length; i++ ){
 			let fieldName = path[i];
 			let field = current;
 
-			if ( fieldName !== 'og' ) {
+			if ( true /*fieldName !== 'og'*/ ) {
 				if ( current instanceof Array ) {
 					let arr = current[ current.length - 1 ];
 					if ( arr && arr.length > 0 )
@@ -153,11 +157,17 @@ function Scrapper() {
 				// If we need to store the field in an array.
 				if ( parser.isArray ){
 					const arrName = fields[fields.length-1];
-					const newObj = {};
-					if ( parser.fieldName )
-						newObj[fieldName] = content;
 					if ( !parent[arrName] )
 						parent[arrName] = [];
+
+					let newObj;
+					if ( parser.isStruct ) {
+						newObj = {};
+						if (parser.fieldName)
+							newObj[fieldName] = content;
+					}
+					else
+						newObj = content;
 
 					parent[arrName].push(newObj);
 				}

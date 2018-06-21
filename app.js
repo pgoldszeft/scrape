@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const scraper = require('./scraper');
-const port = 80;
+const port = 3000;
 
 /**
  * @fileOverview This is the entry point of the service.  The service implements
